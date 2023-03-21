@@ -14,6 +14,7 @@ func Excute(c *gin.Context) {
 	resp["message"] = "suc"
 	database := c.Query("database")
 	excute := c.Query("excute")
+	resp["command"] = excute
 	db, err := sql.Open("mysql", database)
 	if err != nil {
 		fmt.Println("Error executing connect:", err)
