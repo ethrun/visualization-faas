@@ -18,13 +18,14 @@ func Excute(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Error executing connect:", err)
 		resp["message"] = err
+		c.JSON(http.StatusNotFound, resp)
 		return
 	}
 	res, err := db.Exec(excute)
 
 	if err != nil {
 		fmt.Printf("Error happened in JSON marshal. Err: %s", err)
-		c.Status(http.StatusNotFound)
+		resp["message"] = err
 	} else {
 		resp["resulte"] = res
 	}
