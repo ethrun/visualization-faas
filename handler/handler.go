@@ -61,6 +61,21 @@ func Query(c *gin.Context) {
 		resp["message"] = err
 	}
 
+	values := make([]interface{}, len(columns))
+	for i := range values {
+		var v interface{}
+		values[i] = &v
+	}
+
+	for rows.Next() {
+		err := rows.Scan(values...)
+		if err != nil {
+			resp["message"] = err
+		}
+	}
+
+	resp["values"] = values
+
 	if err != nil {
 		fmt.Printf("Error happened in JSON marshal. Err: %s", err)
 		resp["message"] = err
