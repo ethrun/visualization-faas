@@ -14,7 +14,7 @@ var (
 )
 
 func registerRouter(r *gin.RouterGroup) {
-	r.GET("/excute", handler.Cors, handler.Excute)
+	r.GET("/api/excute", handler.Cors, handler.Excute)
 }
 
 // init gin app
