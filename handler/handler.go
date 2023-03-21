@@ -22,13 +22,50 @@ func Excute(c *gin.Context) {
 		c.JSON(http.StatusNotFound, resp)
 		return
 	}
-	res, err := db.Exec(excute)
+	rows, err := db.Exec(excute)
+
+	columns, err := rows.RowsAffected()
+	if err != nil {
+		fmt.Printf("Error happened in JSON marshal. Err: %s", err)
+		resp["message"] = err
+	}
 
 	if err != nil {
 		fmt.Printf("Error happened in JSON marshal. Err: %s", err)
 		resp["message"] = err
 	} else {
-		resp["resulte"] = res
+		resp["resulte"] = columns
+	}
+	c.JSON(http.StatusOK, resp)
+	defer db.Close()
+}
+
+func Query(c *gin.Context) {
+	resp := make(map[string]interface{})
+	resp["message"] = "suc"
+	database := c.Query("database")
+	excute := c.Query("excute")
+	resp["command"] = excute
+	db, err := sql.Open("mysql", database)
+	if err != nil {
+		fmt.Println("Error executing connect:", err)
+		resp["message"] = err
+		c.JSON(http.StatusNotFound, resp)
+		return
+	}
+	rows, err := db.Query(excute)
+
+	columns, err := rows.Columns()
+	if err != nil {
+		fmt.Printf("Error happened in JSON marshal. Err: %s", err)
+		resp["message"] = err
+	}
+
+	if err != nil {
+		fmt.Printf("Error happened in JSON marshal. Err: %s", err)
+		resp["message"] = err
+	} else {
+		resp["resulte"] = columns
 	}
 	c.JSON(http.StatusOK, resp)
 	defer db.Close()
